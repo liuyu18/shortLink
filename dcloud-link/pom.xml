@@ -9,9 +9,7 @@
           <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.ysl</groupId>
     <artifactId>dcloud-link</artifactId>
-    <version>1.0-SNAPSHOT</version>
 
 
 </project>
