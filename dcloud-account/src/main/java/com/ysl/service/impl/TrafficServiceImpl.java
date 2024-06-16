@@ -1,17 +1,14 @@
-package net.xdclass.service.impl;
+package com.ysl.service.impl;
 
-import net.xdclass.model.TrafficDO;
-import net.xdclass.mapper.TrafficMapper;
-import net.xdclass.service.TrafficService;
+import com.ysl.model.TrafficDO;
+import com.ysl.mapper.TrafficMapper;
+import com.ysl.service.TrafficService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- *  服务实现类
- * </p>
  *
- * @author 二当家小D
+ * @author ryan
  * @since 2024-06-16
  */
 @Service

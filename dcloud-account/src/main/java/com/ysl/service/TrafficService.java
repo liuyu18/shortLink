@@ -1,14 +1,11 @@
-package net.xdclass.service;
+package com.ysl.service;
 
-import net.xdclass.model.TrafficDO;
+import com.ysl.model.TrafficDO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
- * <p>
- *  服务类
- * </p>
  *
- * @author 二当家小D
+ * @author ryan
  * @since 2024-06-16
  */
 public interface TrafficService extends IService<TrafficDO> {

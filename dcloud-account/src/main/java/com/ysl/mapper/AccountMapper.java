@@ -1,14 +1,11 @@
-package net.xdclass.mapper;
+package com.ysl.mapper;
 
-import net.xdclass.model.AccountDO;
+import com.ysl.model.AccountDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
- * <p>
- *  Mapper 接口
- * </p>
  *
- * @author 二当家小D
+ * @author ryan
  * @since 2024-06-16
  */
 public interface AccountMapper extends BaseMapper<AccountDO> {

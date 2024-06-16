@@ -1,14 +1,11 @@
-package net.xdclass.mapper;
+package com.ysl.mapper;
 
-import net.xdclass.model.TrafficDO;
+import com.ysl.model.TrafficDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
- * <p>
- *  Mapper 接口
- * </p>
  *
- * @author 二当家小D
+ * @author ryan
  * @since 2024-06-16
  */
 public interface TrafficMapper extends BaseMapper<TrafficDO> {

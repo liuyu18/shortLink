@@ -1,17 +1,14 @@
-package net.xdclass.service.impl;
+package com.ysl.service.impl;
 
-import net.xdclass.model.AccountDO;
-import net.xdclass.mapper.AccountMapper;
-import net.xdclass.service.AccountService;
+import com.ysl.model.AccountDO;
+import com.ysl.mapper.AccountMapper;
+import com.ysl.service.AccountService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- *  服务实现类
- * </p>
  *
- * @author 二当家小D
+ * @author ryan
  * @since 2024-06-16
  */
 @Service
