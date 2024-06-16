@@ -12,6 +12,12 @@
     <artifactId>dcloud-account</artifactId>
 
     <dependencies>
+
+          <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-actuator</artifactId>
+          </dependency>
+
       <dependency>
             <groupId>com.ysl</groupId>
             <artifactId>dcloud-common</artifactId>
