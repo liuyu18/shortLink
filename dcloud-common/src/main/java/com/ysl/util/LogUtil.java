@@ -14,7 +14,7 @@ public class LogUtil {
         logger.debug(message);
     }
 
-    public static void error(String message) {
+    public static void error(String message, String body) {
         logger.error(message);
     }
 
