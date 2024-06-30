@@ -6,16 +6,17 @@ import org.slf4j.LoggerFactory;
 public class LogUtil {
     private static final Logger logger = LoggerFactory.getLogger(LogUtil.class);
 
-    public static void info(String message) {
-        logger.info(message);
+    public static void info(String tip, String content) {
+        logger.info("{}{}", tip, content);
     }
 
     public static void debug(String message) {
         logger.debug(message);
     }
 
-    public static void error(String message, String body) {
-        logger.error(message);
+    public static void error(String tip, String content) {
+        logger.error("{}{}", tip, content);
+
     }
 
     public static void error(String message, Throwable throwable) {
