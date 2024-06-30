@@ -12,6 +12,12 @@
       <artifactId>dcloud-common</artifactId>
 
       <dependencies>
+
+            <dependency>
+                  <groupId>org.apache.commons</groupId>
+                  <artifactId>commons-pool2</artifactId>
+            </dependency>
+            
             <!-- 代码自动生成依赖 begin -->
             <dependency>
                   <groupId>com.baomidou</groupId>
