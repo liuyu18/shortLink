@@ -1,15 +1,20 @@
 package com.ysl.util;
 
-import lombok.extern.slf4j.Slf4j;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CommonUtil {
@@ -163,7 +168,7 @@ public class CommonUtil {
             response.flushBuffer();
 
         } catch (IOException e) {
-            log.warn("响应json数据给前端异常:{}", e);
+            LogUtil.error("响应json数据给前端异常:{}", e);
         }
 
     }

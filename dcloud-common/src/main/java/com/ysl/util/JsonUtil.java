@@ -40,7 +40,7 @@ public class JsonUtil {
             jsonStr = mapper.writeValueAsString(obj);
         } catch (Exception e) {
             // TODO: handle exception
-            log.error("json格式化异常:{}", e);
+            LogUtil.error("json格式化异常:{}", e);
         }
         return jsonStr;
     }
@@ -52,7 +52,7 @@ public class JsonUtil {
 
         } catch (Exception e) {
             // TODO: handle exception
-            log.error("json格式化异常:{}", e);
+            LogUtil.error("json格式化异常:{}", e);
         }
         return obj;
     }
@@ -64,7 +64,7 @@ public class JsonUtil {
             return list;
         } catch (Exception e) {
             // e.printStackTrace();
-            log.error("json格式化异常:{}", e);
+            LogUtil.error("json格式化异常:{}", e);
         }
         return null;
     }
@@ -75,7 +75,7 @@ public class JsonUtil {
             byteArr = mapper.writeValueAsBytes(obj);
         } catch (JsonProcessingException e) {
             // e.printStackTrace();
-            log.error("json格式化异常:{}", e);
+            LogUtil.error("json格式化异常:{}", e);
         }
         return byteArr;
     }
@@ -86,7 +86,7 @@ public class JsonUtil {
             obj = mapper.readValue(byteArr, beanType);
         } catch (Exception e) {
             // e.printStackTrace();
-            log.error("json格式化异常:{}", e);
+            LogUtil.error("json格式化异常:{}", e);
         }
         return obj;
     }
