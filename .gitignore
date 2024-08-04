@@ -24,3 +24,5 @@ hs_err_pid*
 replay_pid*
 
 *.yml
+dcloud-account\src\main\resources\application.yml
+dcloud-account/src/main/resources/application.yml

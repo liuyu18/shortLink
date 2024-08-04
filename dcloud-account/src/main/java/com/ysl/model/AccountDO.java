@@ -1,6 +1,7 @@
 package com.ysl.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ysl.enums.AuthTypeEnum;
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -25,39 +26,22 @@ public class AccountDO implements Serializable {
 
     private Long accountNo;
 
-    /**
-     * 头像
-     */
+
     private String headImg;
 
-    /**
-     * 手机号
-     */
+   
     private String phone;
 
-    /**
-     * 密码
-     */
     private String pwd;
 
-    /**
-     * 盐，用于个人敏感信息处理
-     */
+
     private String secret;
 
-    /**
-     * 邮箱
-     */
+
     private String mail;
 
-    /**
-     * 用户名
-     */
     private String username;
 
-    /**
-     * 认证级别，DEFAULT，REALNAME，ENTERPRISE，访问次数不一样
-     */
     private String auth;
 
     private Date gmtCreate;

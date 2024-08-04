@@ -10,6 +10,11 @@ public class LogUtil {
         logger.info("{}{}", tip, content);
     }
 
+    public static void info(String format, Object arg1, Object arg2) {
+        // logger.info("{}{}", tip, content);
+        logger.info(format, arg1, arg2);
+    }
+
     public static void debug(String message) {
         logger.debug(message);
     }
@@ -23,4 +28,3 @@ public class LogUtil {
         logger.error(message, throwable);
     }
 }
-
