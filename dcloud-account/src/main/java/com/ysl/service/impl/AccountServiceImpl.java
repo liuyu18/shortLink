@@ -1,6 +1,8 @@
 package com.ysl.service.impl;
 
 import com.ysl.model.AccountDO;
+import com.ysl.model.LoginUser;
+import com.ysl.controller.request.AccountLoginRequest;
 import com.ysl.controller.request.AccountRegisterRequest;
 import com.ysl.enums.AuthTypeEnum;
 import com.ysl.enums.BizCodeEnum;
@@ -9,9 +11,11 @@ import com.ysl.manager.AccountManager;
 import com.ysl.service.AccountService;
 import com.ysl.service.NotifyService;
 import com.ysl.util.CommonUtil;
+import com.ysl.util.JWTUtil;
 import com.ysl.util.JsonData;
 import com.ysl.util.LogUtil;
 
+import java.util.List;
 
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +50,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
         AccountDO accountDO = new AccountDO();
+        accountDO.setAccountNo(CommonUtil.getCurrentTimestamp());
         BeanUtils.copyProperties(registerRequest, accountDO);
         accountDO.setAuth(AuthTypeEnum.DEFAULT.name());
         accountDO.setSecret("$1$" + CommonUtil.getStringNumRandom(8));
@@ -60,6 +65,28 @@ public class AccountServiceImpl implements AccountService {
 
     private void userRegisterInitTask(AccountDO accountDO) {
 
+    }
+
+    public JsonData login(AccountLoginRequest request) {
+        List<AccountDO> accountDOList = accountManager.findByPhone(request.getPhone());
+        if(accountDOList != null && accountDOList.size() == 1) {
+            AccountDO accountDO = accountDOList.get(0);
+            String md5String = Md5Crypt.md5Crypt(request.getPwd().getBytes(), accountDO.getSecret());
+            if (md5String.equalsIgnoreCase(accountDO.getPwd())) {
+                LoginUser loginUser = LoginUser.builder().build();
+                BeanUtils.copyProperties(accountDO, loginUser);
+
+                String token = JWTUtil.geneJsonWeString(loginUser);
+
+
+
+                return JsonData.buildSuccess(token);
+            } else {
+                return JsonData.buildResult(BizCodeEnum.ACCOUNT_PWD_ERROR);
+            }
+        }else {
+            return JsonData.buildResult(BizCodeEnum.ACCOUNT_UNREGISTER);
+        }
     }
 
 }

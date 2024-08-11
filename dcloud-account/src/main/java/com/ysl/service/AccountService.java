@@ -1,9 +1,7 @@
 package com.ysl.service;
 
 import com.ysl.controller.request.AccountRegisterRequest;
-import com.ysl.model.AccountDO;
 import com.ysl.util.JsonData;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  *
@@ -12,4 +10,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface AccountService {
      JsonData register(AccountRegisterRequest registerRequest);
+     JsonData login(AccountRegisterRequest request);
 }
