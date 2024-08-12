@@ -19,7 +19,7 @@ import com.ysl.util.JsonData;
  * @since 2024-06-16
  */
 @RestController
-@RequestMapping("/api/v1/account")
+@RequestMapping("/api/account/v1")
 public class AccountController {
 
     private FileService fileService;

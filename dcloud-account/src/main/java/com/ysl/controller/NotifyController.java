@@ -10,7 +10,6 @@ import com.ysl.util.JsonData;
 import com.ysl.util.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +25,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/api/account/v1")
+@RequestMapping("/api/notify/v1")
 @Slf4j
 public class NotifyController {
 
@@ -38,7 +37,6 @@ public class NotifyController {
 
     private static final long CAPTCHA_CODE_EXPIRED = 1000 * 10 * 60;
 
-    @Autowired
     public NotifyController(NotifyService notifyService,
                             Producer captchaProducer,
                             StringRedisTemplate redisTemplate) {
