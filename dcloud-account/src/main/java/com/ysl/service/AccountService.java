@@ -1,5 +1,6 @@
 package com.ysl.service;
 
+import com.ysl.controller.request.AccountLoginRequest;
 import com.ysl.controller.request.AccountRegisterRequest;
 import com.ysl.util.JsonData;
 
@@ -10,5 +11,5 @@ import com.ysl.util.JsonData;
  */
 public interface AccountService {
      JsonData register(AccountRegisterRequest registerRequest);
-     JsonData login(AccountRegisterRequest request);
+     JsonData login(AccountLoginRequest request);
 }

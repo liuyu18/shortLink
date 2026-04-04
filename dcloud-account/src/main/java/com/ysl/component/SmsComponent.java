@@ -1,10 +1,7 @@
 package com.ysl.component;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.ysl.config.SmsConfig;
 import com.ysl.model.SmsCode;
-import com.ysl.util.HttpUtils;
-import com.ysl.util.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -13,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import java.net.http.HttpResponse;
+
 import java.util.HashMap;
 import java.util.Map;
 
