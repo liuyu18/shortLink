@@ -6,10 +6,8 @@ import com.ysl.controller.request.AccountLoginRequest;
 import com.ysl.controller.request.AccountRegisterRequest;
 import com.ysl.enums.AuthTypeEnum;
 import com.ysl.enums.BizCodeEnum;
-import com.ysl.enums.SendCodeEnum;
 import com.ysl.manager.AccountManager;
 import com.ysl.service.AccountService;
-import com.ysl.service.NotifyService;
 import com.ysl.util.CommonUtil;
 import com.ysl.util.JWTUtil;
 import com.ysl.util.JsonData;
@@ -18,7 +16,6 @@ import com.ysl.util.LogUtil;
 import java.util.List;
 
 import org.apache.commons.codec.digest.Md5Crypt;
-import org.apache.commons.lang3.StringUtils;
 import groovy.util.logging.Slf4j;
 
 
@@ -33,22 +30,14 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class AccountServiceImpl implements AccountService {
-    private NotifyService notifyService;
-    private AccountManager accountManager;
+    private final AccountManager accountManager;
+
+    public AccountServiceImpl(AccountManager accountManager) {
+        this.accountManager = accountManager;
+    }
 
     @Override
     public JsonData register(AccountRegisterRequest registerRequest) {
-        boolean checkCode = false;
-        if (StringUtils.isNotBlank(registerRequest.getPhone())) {
-            checkCode = notifyService.checkCode(SendCodeEnum.USER_REGISTER, registerRequest.getPhone(),
-                    registerRequest.getCode());
-
-        }
-
-        if (!checkCode) {
-            return JsonData.buildResult(BizCodeEnum.CODE_ERROR);
-        }
-
         AccountDO accountDO = new AccountDO();
         accountDO.setAccountNo(CommonUtil.getCurrentTimestamp());
         BeanUtils.copyProperties(registerRequest, accountDO);

@@ -24,7 +24,7 @@ public class CaptchaConfig {
         properties.setProperty(Constants.KAPTCHA_TEXTPRODUCER_CHAR_STRING, "0123456789");
         
         Config config = new Config(properties);
-        kaptcha().setConfig(config);
+        kaptcha.setConfig(config);
         return kaptcha;
     }
 }

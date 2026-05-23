@@ -16,12 +16,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
-
 @Configuration
 public class RestTemplateConfig {
 
     @Bean
-    public RestTemplate restTemplate(ClientHttpRequestFactory requestFactory) {
+    public RestTemplate restTemplate(ClientHttpRequestFactory requestFactory){
         return new RestTemplate(requestFactory);
     }
 
@@ -32,15 +31,13 @@ public class RestTemplateConfig {
 
     @Bean
     public HttpClient httpClient() {
-
         Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.getSocketFactory())
                 .register("https", SSLConnectionSocketFactory.getSocketFactory())
                 .build();
 
         PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(registry);
-
-        connectionManager.setMaxTotal(500);
+        connectionManager.setMaxTotal(200);
         connectionManager.setDefaultMaxPerRoute(300);
 
 
@@ -50,13 +47,11 @@ public class RestTemplateConfig {
                 .setConnectionRequestTimeout(1000)
                 .build();
 
-        CloseableHttpClient closeableHttpClient = HttpClientBuilder
-                .create()
+        CloseableHttpClient closeableHttpClient = HttpClientBuilder.create()
                 .setDefaultRequestConfig(requestConfig)
                 .setConnectionManager(connectionManager)
                 .build();
 
         return closeableHttpClient;
     }
-
 }

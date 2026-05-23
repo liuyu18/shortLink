@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class AccountManagerImpl implements AccountManager {
-    private AccountMapper accountMapper;
+    private final AccountMapper accountMapper;
 
     AccountManagerImpl(AccountMapper accountMapper) {
         this.accountMapper = accountMapper;
@@ -29,8 +29,7 @@ public class AccountManagerImpl implements AccountManager {
 
     @Override
     public List<AccountDO> findByPhone(String phone) {
-       List<AccountDO> accountDOList = accountMapper.selectList(new QueryWrapper<AccountDO>().eq("phone", phone));
-       return accountDOList;
+        return accountMapper.selectList(new QueryWrapper<AccountDO>().eq("phone", phone));
     }
 
 }

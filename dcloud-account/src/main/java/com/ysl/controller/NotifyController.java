@@ -8,8 +8,15 @@ import com.ysl.service.NotifyService;
 import com.ysl.util.CommonUtil;
 import com.ysl.util.JsonData;
 import com.ysl.util.LogUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping("/api/notify/v1")
 @Slf4j
+@Tag(name = "通知模块", description = "图形验证码、短信验证码等通知接口")
 public class NotifyController {
 
     private final NotifyService notifyService;
@@ -45,8 +53,14 @@ public class NotifyController {
         this.redisTemplate = redisTemplate;
     }
 
-    @GetMapping("captcha")
-    public void getCaptcha(HttpServletRequest request, HttpServletResponse response) {
+    @GetMapping(value = "captcha", produces = MediaType.IMAGE_JPEG_VALUE)
+    @Operation(summary = "获取图形验证码", description = "返回 JPG 图形验证码，并按客户端 IP 和 User-Agent 缓存在 Redis 中。")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "验证码图片", content = @Content(mediaType = "image/jpeg"))
+    })
+    public void getCaptcha(
+            @Parameter(hidden = true) HttpServletRequest request,
+            @Parameter(hidden = true) HttpServletResponse response) {
         String captchaText = captchaProducer.createText();
         LogUtil.info("验证码内容: {}", captchaText);
         redisTemplate.opsForValue().set(getCaptchaKey(request),
@@ -74,8 +88,16 @@ public class NotifyController {
         return key;
     }
 
-    @RequestMapping("send_code")
-    public JsonData sendCode(@RequestBody SendCodeRequest sendCodeRequest, HttpServletRequest httpServletRequest) {
+    @RequestMapping(value = "send_code", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "发送短信验证码", description = "校验图形验证码后，向指定手机号或邮箱发送注册验证码。")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "发送结果", content = @Content(schema = @Schema(implementation = JsonData.class)))
+    })
+    public JsonData sendCode(
+            @Parameter(description = "发送验证码请求参数", required = true)
+            @RequestBody SendCodeRequest sendCodeRequest,
+            @Parameter(hidden = true)
+            HttpServletRequest httpServletRequest) {
         String key = getCaptchaKey(httpServletRequest);
         String cacheCaptcha = redisTemplate.opsForValue().get(key);
         String captcha = sendCodeRequest.getCaptcha();
