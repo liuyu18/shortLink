@@ -1,2 +1,15 @@
+/Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/model/ShortLinkDO.java
+/Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/vo/LinkGroupVO.java
+/Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/controller/LinkGroupController.java
 /Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/LinkApplication.java
 /Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/component/ShortLinkComponent.java
+/Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/controller/ShortLinkController.java
+/Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/mapper/ShortLinkMapper.java
+/Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/controller/request/LinkGroupUpdateRequest.java
+/Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/service/impl/LinkGroupServiceImpl.java
+/Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/service/LinkGroupService.java
+/Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/model/LinkGroupDO.java
+/Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/manager/LinkGroupManager.java
+/Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/mapper/LinkGroupMapper.java
+/Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/controller/request/LinkGroupAddRequest.java
+/Users/haha/Documents/UGit/shortLink/dcloud-link/src/main/java/com/ysl/manager/impl/LinkGroupManagerImpl.java
