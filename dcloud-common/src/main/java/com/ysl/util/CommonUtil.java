@@ -14,6 +14,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.hash.Hashing;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -171,6 +173,10 @@ public class CommonUtil {
             LogUtil.error("响应json数据给前端异常:{}", e);
         }
 
+    }
+    public static long murmurHash(String param) {
+     long murmurHash32 = Hashing.murmur3_32().hashUnencodedChars(param).padToLong();
+        return murmurHash32;
     }
 
 }

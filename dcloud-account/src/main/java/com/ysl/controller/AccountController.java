@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
 
+import com.ysl.controller.request.AccountLoginRequest;
 import com.ysl.controller.request.AccountRegisterRequest;
 import com.ysl.enums.BizCodeEnum;
 import com.ysl.service.AccountService;
@@ -40,14 +41,18 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    public JsonData login(@RequestBody AccountLoginRequest request) {
+        JsonData jsonData = accountService.login(request);
+        return jsonData;
+    }
+
     @PostMapping(value = "upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "上传用户头像", description = "上传头像图片，成功后返回图片访问地址。请求类型为 multipart/form-data。")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "上传成功或业务失败，统一返回 JsonData", content = @Content(schema = @Schema(implementation = JsonData.class)))
     })
     public JsonData uploadUserImg(
-            @Parameter(description = "头像文件", required = true, schema = @Schema(type = "string", format = "binary"))
-            @RequestPart("file") MultipartFile file) {
+            @Parameter(description = "头像文件", required = true, schema = @Schema(type = "string", format = "binary")) @RequestPart("file") MultipartFile file) {
 
         String result = fileService.uploadUserImg(file);
 
@@ -62,8 +67,7 @@ public class AccountController {
             @ApiResponse(responseCode = "200", description = "注册结果", content = @Content(schema = @Schema(implementation = JsonData.class)))
     })
     public JsonData register(
-            @Parameter(description = "注册请求参数", required = true)
-            @RequestBody AccountRegisterRequest registerRequest) {
+            @Parameter(description = "注册请求参数", required = true) @RequestBody AccountRegisterRequest registerRequest) {
         JsonData jsonData = accountService.register(registerRequest);
         return jsonData;
     }
