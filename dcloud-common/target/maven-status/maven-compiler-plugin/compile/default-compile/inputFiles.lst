@@ -1,12 +1,14 @@
 /Users/haha/Documents/UGit/shortLink/dcloud-common/src/main/java/com/ysl/util/CheckUtil.java
 /Users/haha/Documents/UGit/shortLink/dcloud-common/src/main/java/com/ysl/config/OpenApiConfig.java
 /Users/haha/Documents/UGit/shortLink/dcloud-common/src/main/java/com/ysl/enums/AuthTypeEnum.java
+/Users/haha/Documents/UGit/shortLink/dcloud-common/src/main/java/com/ysl/enums/ShortLinkStateEnum.java
 /Users/haha/Documents/UGit/shortLink/dcloud-common/src/main/java/com/ysl/util/LogUtil.java
 /Users/haha/Documents/UGit/shortLink/dcloud-common/src/main/java/com/ysl/enums/BizCodeEnum.java
 /Users/haha/Documents/UGit/shortLink/dcloud-common/src/main/java/com/ysl/config/SnowFlakeWordIdConfig.java
 /Users/haha/Documents/UGit/shortLink/dcloud-common/src/main/java/com/ysl/constant/RedisKey.java
 /Users/haha/Documents/UGit/shortLink/dcloud-common/src/main/java/com/ysl/interceptor/LoginInterceptor.java
 /Users/haha/Documents/UGit/shortLink/dcloud-common/src/main/java/com/ysl/exception/CustomExceptionHandler.java
+/Users/haha/Documents/UGit/shortLink/dcloud-common/src/main/java/com/ysl/enums/DomainTypeEnum.java
 /Users/haha/Documents/UGit/shortLink/dcloud-common/src/main/java/com/ysl/util/TimeUtil.java
 /Users/haha/Documents/UGit/shortLink/dcloud-common/src/main/java/com/ysl/Main.java
 /Users/haha/Documents/UGit/shortLink/dcloud-common/src/main/java/com/ysl/config/RestTemplateConfig.java

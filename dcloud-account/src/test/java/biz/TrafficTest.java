@@ -18,8 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest(classes = AccountApplication.class)
 @Slf4j
 public class  TrafficTest {
-    @Autowired
     private TrafficMapper trafficMapper;
+
+    @Autowired
+    public void setTrafficMapper(TrafficMapper trafficMapper) {
+        this.trafficMapper = trafficMapper;
+    }
 
     @Test
     public void testSaveTraffic() {

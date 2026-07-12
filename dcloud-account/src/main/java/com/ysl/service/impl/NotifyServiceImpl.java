@@ -10,7 +10,6 @@ import com.ysl.util.CheckUtil;
 import com.ysl.util.CommonUtil;
 import com.ysl.util.JsonData;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.cache.CacheProperties.Redis;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ public class NotifyServiceImpl implements NotifyService {
     private final RestTemplate restTemplate;
     private final SmsComponent smsComponent;
     private final SmsConfig smsConfig;
-    private StringRedisTemplate redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     public NotifyServiceImpl(RestTemplate restTemplate,
             SmsComponent smsComponent,

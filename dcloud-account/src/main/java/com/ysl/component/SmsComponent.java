@@ -2,8 +2,8 @@ package com.ysl.component;
 
 import com.ysl.config.SmsConfig;
 import com.ysl.model.SmsCode;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -17,14 +17,13 @@ import java.util.Map;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class SmsComponent {
     private static final String URL_TEMPLATE = "https://gyytz.market.alicloudapi.com/sms/smsBatchSend?mobile=%s&templateId=%s&value=%s";
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    @Autowired
-    private SmsConfig smsConfig;
+    private final SmsConfig smsConfig;
     
     @Async("threadPoolTaskExecutor")
     public void send(String to, String templateId, String value) {

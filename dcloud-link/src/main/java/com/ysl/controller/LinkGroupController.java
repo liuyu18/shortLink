@@ -6,17 +6,17 @@ import com.ysl.enums.BizCodeEnum;
 import com.ysl.service.LinkGroupService;
 import com.ysl.util.JsonData;
 import com.ysl.vo.LinkGroupVO;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/group/v1")
+@RequiredArgsConstructor
 public class LinkGroupController {
 
-    @Autowired
-    private LinkGroupService linkGroupService;
+    private final LinkGroupService linkGroupService;
     @PostMapping("/add")
     public JsonData add(@RequestBody LinkGroupAddRequest addRequest) {
         int rows = linkGroupService.add(addRequest);

@@ -14,10 +14,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(classes = AccountApplication.class)
 @Slf4j
 public class SmsTest {
-    @Autowired
     private SmsComponent smsComponent;
-    @Autowired
     private SmsConfig smsConfig;
+
+    @Autowired
+    public void setSmsComponent(SmsComponent smsComponent) {
+        this.smsComponent = smsComponent;
+    }
+
+    @Autowired
+    public void setSmsConfig(SmsConfig smsConfig) {
+        this.smsConfig = smsConfig;
+    }
     
     @Test
     public void testSendSms() {

@@ -4,15 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ysl.manager.LinkGroupManager;
 import com.ysl.mapper.LinkGroupMapper;
 import com.ysl.model.LinkGroupDO;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class LinkGroupManagerImpl implements LinkGroupManager {
-    @Autowired
-    private LinkGroupMapper linkGroupMapper;
+    private final LinkGroupMapper linkGroupMapper;
 
     @Override
     public int add(LinkGroupDO linkGroupDO) {
