@@ -98,9 +98,8 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        // 没有携带 token 时，当前实现直接拦截请求。
-        // 这里没有写响应体，意味着调用方可能只会感知到请求被拦截，
-        // 而不会拿到与“token 非法”一致的标准错误结构。
+        // 没有携带 token 时，返回与 token 无效一致的标准未登录响应。
+        CommonUtil.sendJsonMessage(response, JsonData.buildResult(BizCodeEnum.ACCOUNT_UNLOGIN));
         return false;
     }
 

@@ -1,5 +1,6 @@
 package com.ysl.controller;
 
+import io.swagger.v3.core.util.Json;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +42,13 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    public JsonData login(@RequestBody AccountLoginRequest request) {
+    @PostMapping(value = "login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "用户登录", description = "使用手机号和密码登录，成功后返回 token。")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "登录结果", content = @Content(schema = @Schema(implementation = JsonData.class)))
+    })
+    public JsonData login(
+            @Parameter(description = "登录请求参数", required = true) @RequestBody AccountLoginRequest request) {
         JsonData jsonData = accountService.login(request);
         return jsonData;
     }

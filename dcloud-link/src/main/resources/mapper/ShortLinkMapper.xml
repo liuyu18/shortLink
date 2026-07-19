@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ysl.model.ShortLinkDO">
-    <resultMap id="BaseResultMap" type="net.xdclass.model.ShortLinkDO">
+<mapper namespace="com.ysl.mapper.ShortLinkMapper">
+    <resultMap id="BaseResultMap" type="com.ysl.model.ShortLinkDO">
         <id column="id" property="id" />
         <result column="group_id" property="groupId" />
         <result column="title" property="title" />
