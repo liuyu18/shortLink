@@ -1,0 +1,249 @@
+{
+  "info": {
+    "_postman_id": "0b9db12a-a00d-4c4d-9e07-c7fb5d13a59a",
+    "name": "dcloud-account API",
+    "description": "Account service requests for local development. Default baseUrl is http://localhost:8001.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "OpenAPI",
+      "item": [
+        {
+          "name": "Get OpenAPI Docs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v3/api-docs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v3",
+                "api-docs"
+              ]
+            },
+            "description": "Returns the generated OpenAPI JSON for the account service."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Grouped OpenAPI Docs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v3/api-docs/short-link",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v3",
+                "api-docs",
+                "short-link"
+              ]
+            },
+            "description": "Returns the grouped OpenAPI JSON configured by OpenApiConfig."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "通知模块",
+      "item": [
+        {
+          "name": "获取图形验证码",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/notify/v1/captcha",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notify",
+                "v1",
+                "captcha"
+              ]
+            },
+            "description": "Returns a JPG captcha image. The captcha text is logged by the service for local development."
+          },
+          "response": []
+        },
+        {
+          "name": "发送短信验证码",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"captcha\": \"a8x3\",\n  \"to\": \"13800138000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notify/v1/send_code",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "notify",
+                "v1",
+                "send_code"
+              ]
+            },
+            "description": "Sends a verification code after validating the captcha."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "账号模块",
+      "item": [
+        {
+          "name": "上传用户头像",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/v1/upload",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "v1",
+                "upload"
+              ]
+            },
+            "description": "Uploads an avatar image with multipart/form-data. Choose a local file for the file field before sending."
+          },
+          "response": []
+        },
+        {
+          "name": "用户注册",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"headImg\": \"https://example.com/avatar.png\",\n  \"phone\": \"13800138000\",\n  \"pwd\": \"123456\",\n  \"mail\": \"test@example.com\",\n  \"username\": \"zhangsan\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/v1/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "v1",
+                "register"
+              ]
+            },
+            "description": "Registers a user account. The service returns JsonData with code 0 on success."
+          },
+          "response": []
+        },
+        {
+          "name": "用户登录",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.headers.get('Content-Type') && pm.response.headers.get('Content-Type').includes('application/json')) {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.code === 0 && json.data) {",
+                  "    pm.collectionVariables.set('token', json.data);",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"13800138000\",\n  \"pwd\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/account/v1/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "v1",
+                "login"
+              ]
+            },
+            "description": "Logs in with phone and password. A successful response saves JsonData.data into the collection variable token."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8001",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
