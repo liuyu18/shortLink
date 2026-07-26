@@ -1,8 +1,7 @@
 package com.ysl.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -10,6 +9,9 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("short_link")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ShortLinkDO implements Serializable {
     private static final long serialVersionUID = 1L;
     private Long id;
