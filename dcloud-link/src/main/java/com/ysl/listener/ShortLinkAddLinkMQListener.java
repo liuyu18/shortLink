@@ -3,8 +3,11 @@ package com.ysl.listener;
 
 import com.rabbitmq.client.Channel;
 import com.ysl.enums.BizCodeEnum;
+import com.ysl.enums.EventMessageType;
 import com.ysl.exception.BizException;
 import com.ysl.model.EventMessage;
+import com.ysl.service.ShortLinkService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -17,9 +20,11 @@ import java.io.IOException;
 @Component
 @Slf4j
 @RabbitListener(queuesToDeclare = { @Queue("short_link.add.link.queue") })
+@RequiredArgsConstructor
 public class ShortLinkAddLinkMQListener {
 
 
+    private final ShortLinkService shortLinkService;
 
     @RabbitHandler
     public void shortLinkHandler(
@@ -29,6 +34,8 @@ public class ShortLinkAddLinkMQListener {
         try{
 
             //TODO 处理业务逻辑
+            eventMessage.setEventMessageType(EventMessageType.SHORT_LINK_ADD_LINK.name());
+            shortLinkService.handlerAddShortLink(eventMessage);
 
         }catch (Exception e){
 

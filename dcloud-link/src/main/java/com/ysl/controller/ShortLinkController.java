@@ -1,8 +1,10 @@
 package com.ysl.controller;
 
 import com.ysl.controller.request.ShortLinkAddRequest;
+import com.ysl.controller.request.ShortLinkPageRequest;
 import com.ysl.service.ShortLinkService;
 import com.ysl.util.JsonData;
+import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/link/v1")
@@ -31,8 +35,12 @@ public class ShortLinkController {
     })
     public JsonData createShortLink(
             @Parameter(description = "创建短链请求参数", required = true) @RequestBody ShortLinkAddRequest request) {
-        JsonData jsonData = shortLinkService.createShortLink(request);
-        return jsonData;
+        return shortLinkService.createShortLink(request);
+    }
+
+    public JsonData pageByGroupId(@RequestBody ShortLinkPageRequest request) {
+        Map<String, Object> result = shortLinkService.pageByGroupId(request);
+        return JsonData.buildSuccess(result);
     }
 
 }

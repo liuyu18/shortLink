@@ -31,8 +31,7 @@ public class LinkGroupServiceImpl implements LinkGroupService {
         LinkGroupDO linkGroupDO = new LinkGroupDO();
         linkGroupDO.setTitle(addRequest.getTitle());
         linkGroupDO.setAccountNo(accountNo);
-        int rows = linkGroupManager.add(linkGroupDO);
-        return rows;
+        return linkGroupManager.add(linkGroupDO);
     }
 
     @Override
@@ -52,14 +51,13 @@ public class LinkGroupServiceImpl implements LinkGroupService {
 
     @Override
     public List<LinkGroupVO> listAllGroup() {
-       Long accountNo = LoginInterceptor.threadLocal.get().getAccountNo();
-       List<LinkGroupDO> linkGroupDOList = linkGroupManager.listAllGroup(accountNo);
-       List<LinkGroupVO> groupVOList = linkGroupDOList.stream().map(linkGroupDO -> {
-           LinkGroupVO linkGroupVO = new LinkGroupVO();
-           BeanUtils.copyProperties(linkGroupDO, linkGroupVO);
-           return linkGroupVO;
-       }).collect(Collectors.toList());
-       return groupVOList;
+        Long accountNo = LoginInterceptor.threadLocal.get().getAccountNo();
+        List<LinkGroupDO> linkGroupDOList = linkGroupManager.listAllGroup(accountNo);
+        return linkGroupDOList.stream().map(linkGroupDO -> {
+            LinkGroupVO linkGroupVO = new LinkGroupVO();
+            BeanUtils.copyProperties(linkGroupDO, linkGroupVO);
+            return linkGroupVO;
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -71,8 +69,6 @@ public class LinkGroupServiceImpl implements LinkGroupService {
         linkGroupDO.setId(request.getId());
         linkGroupDO.setAccountNo(accountNo);
 
-        int rows = linkGroupManager.updateById(linkGroupDO);
-
-        return rows;
+        return linkGroupManager.updateById(linkGroupDO);
     }
 }

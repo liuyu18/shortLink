@@ -25,6 +25,7 @@ import java.util.List;
 public class LinkGroupController {
 
     private final LinkGroupService linkGroupService;
+
     @PostMapping("/add")
     @Operation(summary = "新增短链分组", description = "为当前登录账号新增一个短链分组。")
     @ApiResponses({
@@ -33,9 +34,10 @@ public class LinkGroupController {
     public JsonData add(
             @Parameter(description = "新增分组请求参数", required = true) @RequestBody LinkGroupAddRequest addRequest) {
         int rows = linkGroupService.add(addRequest);
-        return rows == 1 ? JsonData.buildSuccess() : JsonData.buildError("添加失败");
+        return rows == 1 ? JsonData.buildSuccess() : JsonData.buildResult(BizCodeEnum.GROUP_ADD_FAIL);
     }
-    @GetMapping("detail/{group_id}")
+
+    @GetMapping("del/{group_id}")
     @Operation(summary = "删除短链分组", description = "按分组 ID 删除当前登录账号下的短链分组。")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "删除结果", content = @Content(schema = @Schema(implementation = JsonData.class)))
@@ -43,15 +45,22 @@ public class LinkGroupController {
     public JsonData del(
             @Parameter(description = "分组 ID", required = true, example = "1") @PathVariable("group_id") Long id) {
         int rows = linkGroupService.delete(id);
-        return rows == 1 ? JsonData.buildSuccess():JsonData.buildResult(BizCodeEnum.GROUP_NOT_EXIST);
+        return rows == 1 ? JsonData.buildSuccess() : JsonData.buildResult(BizCodeEnum.GROUP_NOT_EXIST);
     }
+
+    public JsonData detail(@PathVariable("group_id") Long groupId) {
+        LinkGroupVO linkGroupVO = linkGroupService.detail(groupId);
+        return JsonData.buildSuccess(linkGroupVO);
+
+    }
+
 
     @GetMapping("list")
     @Operation(summary = "查询短链分组列表", description = "查询当前登录账号下的全部短链分组。")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "分组列表，data 为 LinkGroupVO 数组", content = @Content(schema = @Schema(implementation = JsonData.class)))
     })
-    public JsonData findUserAllLinkGroup(){
+    public JsonData findUserAllLinkGroup() {
 
         List<LinkGroupVO> list = linkGroupService.listAllGroup();
 
@@ -65,10 +74,10 @@ public class LinkGroupController {
             @ApiResponse(responseCode = "200", description = "更新结果", content = @Content(schema = @Schema(implementation = JsonData.class)))
     })
     public JsonData update(
-            @Parameter(description = "更新分组请求参数", required = true) @RequestBody LinkGroupUpdateRequest request){
+            @Parameter(description = "更新分组请求参数", required = true) @RequestBody LinkGroupUpdateRequest request) {
 
         int rows = linkGroupService.updateById(request);
-        return rows == 1 ? JsonData.buildSuccess():JsonData.buildResult(BizCodeEnum.GROUP_OPER_FAIL);
+        return rows == 1 ? JsonData.buildSuccess() : JsonData.buildResult(BizCodeEnum.GROUP_OPER_FAIL);
 
     }
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -71,7 +72,7 @@ public class CommonUtil {
         Enumeration<String> headerNames = request.getHeaderNames();
         Map<String, String> map = new HashMap<>();
         while (headerNames.hasMoreElements()) {
-            String key = (String) headerNames.nextElement();
+            String key = headerNames.nextElement();
             // 根据名称获取请求头的值
             String value = request.getHeader(key);
             map.put(key, value);
@@ -89,10 +90,10 @@ public class CommonUtil {
     public static String MD5(String data) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] array = md.digest(data.getBytes("UTF-8"));
+            byte[] array = md.digest(data.getBytes(StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             for (byte item : array) {
-                sb.append(Integer.toHexString((item & 0xFF) | 0x100).substring(1, 3));
+                sb.append(Integer.toHexString((item & 0xFF) | 0x100), 1, 3);
             }
 
             return sb.toString().toUpperCase();
@@ -174,9 +175,24 @@ public class CommonUtil {
         }
 
     }
+
     public static long murmurHash(String param) {
-     long murmurHash32 = Hashing.murmur3_32().hashUnencodedChars(param).padToLong();
-        return murmurHash32;
+        return Hashing.murmur3_32().hashUnencodedChars(param).padToLong();
+    }
+
+    public static String addUrlPrefix(String url) {
+        return IDUtil.geneSnowFlakeID() + "&" + url;
+    }
+
+    public static String removeUrlPrefix(String url) {
+        return url.substring(url.indexOf("&") + 1);
+    }
+
+    public static String addUrlPrefixVersion(String url) {
+        String version = url.substring(0, url.indexOf("&"));
+        String originalUrl = url.substring(url.indexOf("&") + 1);
+        Long newVersion = Long.parseLong(version) + 1;
+        return newVersion + "&" + originalUrl;
     }
 
 }

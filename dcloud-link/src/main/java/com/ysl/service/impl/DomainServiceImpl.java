@@ -33,7 +33,7 @@ public class DomainServiceImpl implements DomainService {
         custDomainList.addAll(officialDomainList);
 
 
-        return custDomainList.stream().map(obj -> beanProcess(obj)).collect(Collectors.toList());
+        return custDomainList.stream().map(this::beanProcess).collect(Collectors.toList());
     }
 
     private DomainVO beanProcess(DomainDO domainDO) {

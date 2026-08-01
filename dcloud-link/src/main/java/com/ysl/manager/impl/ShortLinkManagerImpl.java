@@ -22,9 +22,8 @@ public class ShortLinkManagerImpl implements ShortLinkManager {
     @Override
     public ShortLinkDO findByShortLinkCode(String shortLinkCode) {
 
-        ShortLinkDO shortLinkDO = shortLinkMapper.selectOne(
+        return shortLinkMapper.selectOne(
                 new QueryWrapper<ShortLinkDO>().eq("code", shortLinkCode));
-        return shortLinkDO;
     }
 
     public int del(String shortLinkCode, Long accountNo) {

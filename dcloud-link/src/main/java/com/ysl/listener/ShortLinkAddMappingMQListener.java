@@ -1,8 +1,10 @@
 package com.ysl.listener;
 
 import com.ysl.enums.BizCodeEnum;
+import com.ysl.enums.EventMessageType;
 import com.ysl.exception.BizException;
 import com.ysl.model.EventMessage;
+import com.ysl.service.ShortLinkService;
 import groovy.util.logging.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -19,6 +21,12 @@ import java.nio.channels.Channel;
 @RabbitListener(queuesToDeclare = {@Queue("short_link.add.mapping.queue")})
 public class ShortLinkAddMappingMQListener {
 
+    private final ShortLinkService shortLinkService;
+
+    public ShortLinkAddMappingMQListener(ShortLinkService shortLinkService) {
+        this.shortLinkService = shortLinkService;
+    }
+
     @RabbitHandler
     public void shortLinkHandler(
             EventMessage eventMessage,
@@ -29,6 +37,9 @@ public class ShortLinkAddMappingMQListener {
         log.info("监听到消息ShortLinkAddLinkMQListener message消息内容:{}", message);
 
         try {
+
+            eventMessage.setEventMessageType(EventMessageType.SHORT_LINK_ADD_MAPPING.name());
+            shortLinkService.handlerAddShortLink(eventMessage);
 
         } catch (Exception e) {
             log.error("消费失败:{}", eventMessage);

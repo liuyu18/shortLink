@@ -31,13 +31,12 @@ public class GroupCodeMappingManagerImpl implements GroupCodeMappingManager {
 
     @Override
     public GroupCodeMappingDO findByGroupIdAndMappingId(Long mappingId, Long accountNo, Long groupId) {
-        GroupCodeMappingDO groupCodeMappingDO = groupCodeMappingMapper.selectOne(
+        return groupCodeMappingMapper.selectOne(
                 new QueryWrapper<GroupCodeMappingDO>()
                         .eq("mapping_id", mappingId)
                         .eq("account_no", accountNo)
                         .eq("group_id", groupId)
         );
-        return groupCodeMappingDO;
     }
 
     @Override
@@ -47,15 +46,14 @@ public class GroupCodeMappingManagerImpl implements GroupCodeMappingManager {
 
     @Override
     public int del(String shortLinkCode, Long accountNo, Long groupId) {
-        int rows = groupCodeMappingMapper.update(
+        return groupCodeMappingMapper.update(
                 null,
                 new UpdateWrapper<GroupCodeMappingDO>()
                         .eq("code", shortLinkCode)
-                .eq("account_no", accountNo)
-                .eq("group_id", groupId)
+                        .eq("account_no", accountNo)
+                        .eq("group_id", groupId)
                         .set("del", 1)
         );
-        return rows;
     }
 
     @Override
@@ -72,20 +70,27 @@ public class GroupCodeMappingManagerImpl implements GroupCodeMappingManager {
         pageMap.put("total_record", groupCodeMappingDOPage.getTotal());
         pageMap.put("total_page", groupCodeMappingDOPage.getRecords());
         pageMap.put("current_data", groupCodeMappingDOPage.getRecords()
-                .stream().map(obj -> beanProcess(obj)).collect(Collectors.toList()));
+                .stream().map(this::beanProcess).collect(Collectors.toList()));
         return Map.of();
     }
 
     @Override
     public int updateGroupCodeMappingState(Long accountNo, Long groupId, String shortLinkCode, ShortLinkStateEnum shortLinkStateEnum) {
-        int rows = groupCodeMappingMapper.update(null,
+
+        return groupCodeMappingMapper.update(null,
                 new UpdateWrapper<GroupCodeMappingDO>()
                         .eq("code", shortLinkCode)
                         .eq("account_no", accountNo)
                         .eq("group_id", groupId)
                         .set("state", shortLinkStateEnum.name()));
+    }
 
-        return rows;
+    @Override
+    public GroupCodeMappingDO findByCodeAndGroupId(String shortLinkCode, Long groupId, Long accountNo) {
+
+        return groupCodeMappingMapper.selectOne(new QueryWrapper<GroupCodeMappingDO>()
+                .eq("code", shortLinkCode).eq("account_no", accountNo)
+                .eq("group_id", groupId));
     }
 
     private GroupCodeMappingVO beanProcess(GroupCodeMappingDO groupCodeMappingDO) {
