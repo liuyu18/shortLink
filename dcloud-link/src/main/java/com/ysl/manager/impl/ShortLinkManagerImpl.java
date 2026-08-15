@@ -1,6 +1,7 @@
 package com.ysl.manager.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ysl.manager.ShortLinkManager;
 import com.ysl.mapper.ShortLinkMapper;
 import com.ysl.model.ShortLinkDO;
@@ -26,13 +27,28 @@ public class ShortLinkManagerImpl implements ShortLinkManager {
                 new QueryWrapper<ShortLinkDO>().eq("code", shortLinkCode));
     }
 
-    public int del(String shortLinkCode, Long accountNo) {
-
-        ShortLinkDO shortLinkDO = new ShortLinkDO();
-        shortLinkDO.setDel(1);
-
-        int rows = shortLinkMapper.update(shortLinkDO,
-                new QueryWrapper<ShortLinkDO>().eq("code", shortLinkCode).eq("account_no", accountNo));
+    @Override
+    public int del(ShortLinkDO shortLinkDO) {
+        int rows = shortLinkMapper.update(null,
+                new UpdateWrapper<ShortLinkDO>()
+                        .eq("code", shortLinkDO.getCode())
+                        .eq("account_no", shortLinkDO.getAccountNo())
+                        .set("del", 1));
         return rows;
     }
+
+    @Override
+    public int update(ShortLinkDO shortLinkDO) {
+        int rows = shortLinkMapper.update(null, new UpdateWrapper<ShortLinkDO>()
+                .eq("code", shortLinkDO.getCode())
+                .eq("del", 0)
+                .eq("account_no", shortLinkDO.getAccountNo())
+
+                .set("title", shortLinkDO.getTitle())
+                .set("domain", shortLinkDO.getDomain()));
+
+
+        return rows;
+    }
+    
 }

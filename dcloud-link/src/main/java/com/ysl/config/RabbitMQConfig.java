@@ -17,18 +17,82 @@ public class RabbitMQConfig {
 
     @Bean
     public Exchange shortLinkEventExchange() {
-        return new TopicExchange(shortLinkEventExchange, true,false);
+        return new TopicExchange(shortLinkEventExchange, true, false);
     }
 
-    private String shortLinkAddLinkQueue="short_link.add.link.queue";
+    private String shortLinkAddLinkQueue = "short_link.add.link.queue";
 
-    private String shortLinkAddMappingQueue="short_link.add.mapping.queue";
-    private String shortLinkAddRoutingKey="short_link.add.link.mapping.routing.key";
-    private String shortLinkAddLinkBindingKey="short_link.add.link.*.routing.key";
-    private String shortLinkAddMappingBindingKey="short_link.add.*.mapping.routing.key";
+    private String shortLinkAddMappingQueue = "short_link.add.mapping.queue";
+    private String shortLinkAddRoutingKey = "short_link.add.link.mapping.routing.key";
+    private String shortLinkAddLinkBindingKey = "short_link.add.link.*.routing.key";
+    private String shortLinkAddMappingBindingKey = "short_link.add.*.mapping.routing.key";
+
+
+    private String shortLinkDelLinkQueue = "short_link.del.link.queue";
+    private String shortLinkDelMappingQueue = "short_link.del.mapping.queue";
+    private String shortLinkDelRoutingKey = "short_link.del.link.mapping.routing.key";
+    private String shortLinkDelLinkBindingKey = "short_link.del.link.*.routing.key";
+    private String shortLinkDelMappingBindingKey = "short_link.del.*.mapping.routing.key";
+
+
+    private String shortLinkUpdateLinkQueue="short_link.update.link.queue";
+    private String shortLinkUpdateMappingQueue="short_link.update.mapping.queue";
+    private String shortLinkUpdateRoutingKey="short_link.update.link.mapping.routing.key";
+    private String shortLinkUpdateLinkBindingKey="short_link.update.link.*.routing.key";
+    private String shortLinkUpdateMappingBindingKey="short_link.update.*.mapping.routing.key";
+
+
 
     @Bean
-    public Binding shortLinkAddApiBinding(){
+    public Binding shortLinkUpdateApiBinding(){
+        return new Binding(shortLinkUpdateLinkQueue,Binding.DestinationType.QUEUE, shortLinkEventExchange,shortLinkUpdateLinkBindingKey,null);
+    }
+
+
+    @Bean
+    public Binding shortLinkUpdateMappingBinding(){
+        return new Binding(shortLinkUpdateMappingQueue,Binding.DestinationType.QUEUE, shortLinkEventExchange,shortLinkUpdateMappingBindingKey,null);
+    }
+
+
+    @Bean
+    public Queue shortLinkUpdateLinkQueue(){
+
+        return new Queue(shortLinkUpdateLinkQueue,true,false,false);
+
+    }
+
+    @Bean
+    public Queue shortLinkUpdateMappingQueue(){
+
+        return new Queue(shortLinkUpdateMappingQueue,true,false,false);
+
+    }
+
+    @Bean
+    public Binding ShortDelApiBinding() {
+        return new Binding(shortLinkDelLinkQueue,
+                Binding.DestinationType.QUEUE,
+                shortLinkEventExchange, shortLinkDelLinkBindingKey,
+                null);
+    }
+
+
+    @Bean
+    public Queue shortLinkDelLinkQueue() {
+        return new Queue(shortLinkDelLinkQueue, true, false, false);
+    }
+
+    @Bean
+    public Queue shortLinkDelMappingQueue() {
+
+        return new Queue(shortLinkDelMappingQueue, true, false, false);
+
+    }
+
+
+    @Bean
+    public Binding shortLinkAddApiBinding() {
         return new Binding(
                 shortLinkAddLinkQueue,
                 Binding.DestinationType.QUEUE,
@@ -38,13 +102,13 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue shortLinkAddApiQueue(){
-        return new Queue(shortLinkAddLinkQueue, true, false,false);
+    public Queue shortLinkAddApiQueue() {
+        return new Queue(shortLinkAddLinkQueue, true, false, false);
 
     }
 
     @Bean
-    public Queue shortLinkAddMappingQueue(){
+    public Queue shortLinkAddMappingQueue() {
 
         return new Queue(
                 shortLinkAddMappingQueue,

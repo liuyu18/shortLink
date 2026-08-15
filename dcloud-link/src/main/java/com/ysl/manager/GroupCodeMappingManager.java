@@ -10,11 +10,13 @@ public interface GroupCodeMappingManager {
 
     int add(GroupCodeMappingDO groupCodeMappingDO);
 
-    int del(String shortLinkCode, Long accountNo, Long groupId);
+    int del(GroupCodeMappingDO groupCodeMappingDO);
 
     Map<String, Object> pageShortLinkByGroupId(Integer page, Integer size, Long account, Long groupId);
 
     int updateGroupCodeMappingState(Long accountNo, Long groupId, String shortLinkCode, ShortLinkStateEnum shortLinkStateEnum);
+
+    int update(GroupCodeMappingDO groupCodeMappingDO);
 
     GroupCodeMappingDO findByCodeAndGroupId(String shortLinkCode, Long groupId, Long accountNo);
 }

@@ -1,7 +1,9 @@
 package com.ysl.service;
 
 import com.ysl.controller.request.ShortLinkAddRequest;
+import com.ysl.controller.request.ShortLinkDelRequest;
 import com.ysl.controller.request.ShortLinkPageRequest;
+import com.ysl.controller.request.ShortLinkUpdateRequest;
 import com.ysl.mapper.ShortLinkMapper;
 import com.ysl.model.EventMessage;
 import com.ysl.util.JsonData;
@@ -15,8 +17,17 @@ public interface ShortLinkService {
     JsonData createShortLink(ShortLinkAddRequest request);
 
 
-    boolean handlerAddShortLink(EventMessage eventMessage);
+    boolean handleAddShortLink(EventMessage eventMessage);
 
     Map<String, Object> pageByGroupId(ShortLinkPageRequest request);
+
+    JsonData del(ShortLinkDelRequest request);
+
+    JsonData update(ShortLinkUpdateRequest request);
+
+
+    boolean handleDelShortLink(EventMessage eventMessage);
+
+    boolean handleUpdateShortLink(EventMessage eventMessage);
 
 }

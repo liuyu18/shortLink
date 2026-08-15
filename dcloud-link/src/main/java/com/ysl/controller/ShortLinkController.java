@@ -1,7 +1,9 @@
 package com.ysl.controller;
 
 import com.ysl.controller.request.ShortLinkAddRequest;
+import com.ysl.controller.request.ShortLinkDelRequest;
 import com.ysl.controller.request.ShortLinkPageRequest;
+import com.ysl.controller.request.ShortLinkUpdateRequest;
 import com.ysl.service.ShortLinkService;
 import com.ysl.util.JsonData;
 import io.swagger.v3.core.util.Json;
@@ -43,4 +45,19 @@ public class ShortLinkController {
         return JsonData.buildSuccess(result);
     }
 
+    @PostMapping("del")
+    public JsonData del(@RequestBody ShortLinkDelRequest request) {
+
+        JsonData jsonData = shortLinkService.del(request);
+
+        return jsonData;
+    }
+
+    @PostMapping("update")
+    public JsonData update(@RequestBody ShortLinkUpdateRequest request) {
+
+        JsonData jsonData = shortLinkService.update(request);
+
+        return jsonData;
+    }
 }
