@@ -102,6 +102,16 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Binding shortLinkAddMappingBinding() {
+        return new Binding(
+                shortLinkAddMappingQueue,
+                Binding.DestinationType.QUEUE,
+                shortLinkEventExchange,
+                shortLinkAddMappingBindingKey,
+                null);
+    }
+
+    @Bean
     public Queue shortLinkAddApiQueue() {
         return new Queue(shortLinkAddLinkQueue, true, false, false);
 

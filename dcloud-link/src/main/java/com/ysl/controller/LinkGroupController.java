@@ -48,6 +48,7 @@ public class LinkGroupController {
         return rows == 1 ? JsonData.buildSuccess() : JsonData.buildResult(BizCodeEnum.GROUP_NOT_EXIST);
     }
 
+    @GetMapping("detail/{group_id}")
     public JsonData detail(@PathVariable("group_id") Long groupId) {
         LinkGroupVO linkGroupVO = linkGroupService.detail(groupId);
         return JsonData.buildSuccess(linkGroupVO);

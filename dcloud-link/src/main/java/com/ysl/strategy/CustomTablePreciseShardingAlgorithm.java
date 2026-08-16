@@ -8,10 +8,14 @@ import java.util.Collection;
 public class CustomTablePreciseShardingAlgorithm implements PreciseShardingAlgorithm<String> {
     @Override
     public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<String> shardingValue) {
-        String targetName = availableTargetNames.iterator().next();
-        String value = shardingValue.getValue();
-        String codeSuffix = value.substring(value.length() - 1);
+        String tableSuffix = ShardingTableConfig.getRandomSuffix(shardingValue.getValue());
 
-        return targetName + "_" + codeSuffix;
+        for (String targetName : availableTargetNames) {
+            if (targetName.endsWith("_" + tableSuffix)) {
+                return targetName;
+            }
+        }
+
+        throw new IllegalArgumentException("No short_link table found for suffix: " + tableSuffix);
     }
 }

@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/link/v1")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "短链模块", description = "短链创建、解析等接口")
 public class ShortLinkController {
     private final ShortLinkService shortLinkService;
@@ -37,7 +39,11 @@ public class ShortLinkController {
     })
     public JsonData createShortLink(
             @Parameter(description = "创建短链请求参数", required = true) @RequestBody ShortLinkAddRequest request) {
-        return shortLinkService.createShortLink(request);
+        log.info("[short-link-add][controller] receive request groupId={}, title={}, originalUrl={}, domainId={}, domainType={}, expired={}",
+                request.getGroupId(), request.getTitle(), request.getOriginalUrl(), request.getDomainId(), request.getDomainType(), request.getExpired());
+        JsonData jsonData = shortLinkService.createShortLink(request);
+        log.info("[short-link-add][controller] submit result code={}, data={}", jsonData.getCode(), jsonData.getData());
+        return jsonData;
     }
 
     public JsonData pageByGroupId(@RequestBody ShortLinkPageRequest request) {

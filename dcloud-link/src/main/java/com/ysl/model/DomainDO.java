@@ -12,7 +12,7 @@ import java.util.Date;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("damain")
+@TableName("domain")
 public class DomainDO implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -20,6 +20,7 @@ public class DomainDO implements Serializable {
     private Long id;
 
     private Long accountNo;
+    private String domainType;
     private String value;
     private Integer del;
     private Date gmtCreate;

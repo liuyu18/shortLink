@@ -34,18 +34,24 @@ public class ShortLinkAddMappingMQListener {
             Channel channel
 
     ) throws IOException {
-        log.info("监听到消息ShortLinkAddLinkMQListener message消息内容:{}", message);
+        log.info("[short-link-add][listener-mapping] receive messageId={}, rawMessage={}", eventMessage.getMessageId(), message);
 
         try {
 
             eventMessage.setEventMessageType(EventMessageType.SHORT_LINK_ADD_MAPPING.name());
-            shortLinkService.handlerAddShortLink(eventMessage);
+            boolean result = shortLinkService.handleAddShortLink(eventMessage);
+            log.info("[short-link-add][listener-mapping] handle result messageId={}, result={}, content={}",
+                    eventMessage.getMessageId(), result, eventMessage.getContent());
 
+        } catch (IllegalArgumentException e) {
+            log.warn("[short-link-add][listener-mapping] invalid business message, discard without requeue messageId={}, reason={}, eventMessage={}",
+                    eventMessage.getMessageId(), e.getMessage(), eventMessage);
+            return;
         } catch (Exception e) {
-            log.error("消费失败:{}", eventMessage);
+            log.error("[short-link-add][listener-mapping] consume failed messageId={}, eventMessage={}", eventMessage.getMessageId(), eventMessage, e);
             throw new BizException(BizCodeEnum.MQ_CONSUME_EXCEPTION);
         }
-        log.info("消费成功:{}", eventMessage);
+        log.info("[short-link-add][listener-mapping] consume success messageId={}, eventMessage={}", eventMessage.getMessageId(), eventMessage);
 
     }
 }

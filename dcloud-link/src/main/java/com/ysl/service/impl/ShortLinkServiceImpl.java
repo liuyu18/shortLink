@@ -41,6 +41,8 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class ShortLinkServiceImpl implements ShortLinkService {
 
+    private static final int ADD_SHORT_LINK_MAX_RETRY = 5;
+
     private final ShortLinkManager shortLinkManager;
     private final RabbitTemplate rabbitTemplate;
     private final RabbitMQConfig rabbitMQConfig;
@@ -64,6 +66,8 @@ public class ShortLinkServiceImpl implements ShortLinkService {
     @Override
     public JsonData createShortLink(ShortLinkAddRequest request) {
         Long accountNo = LoginInterceptor.threadLocal.get().getAccountNo();
+        log.info("[short-link-add][service] start accountNo={}, groupId={}, title={}, originalUrl={}, domainId={}, domainType={}, expired={}",
+                accountNo, request.getGroupId(), request.getTitle(), request.getOriginalUrl(), request.getDomainId(), request.getDomainType(), request.getExpired());
         String newOriginalUrl = CommonUtil.addUrlPrefix(request.getOriginalUrl());
         request.setOriginalUrl(newOriginalUrl);
 
@@ -72,25 +76,40 @@ public class ShortLinkServiceImpl implements ShortLinkService {
                 .messageId(IDUtil.geneSnowFlakeID().toString())
                 .eventMessageType(EventMessageType.SHORT_LINK_ADD.name())
                 .build();
+        log.info("[short-link-add][mq-send] exchange={}, routingKey={}, messageId={}, accountNo={}, content={}",
+                rabbitMQConfig.getShortLinkEventExchange(), rabbitMQConfig.getShortLinkAddRoutingKey(),
+                eventMessage.getMessageId(), accountNo, eventMessage.getContent());
         rabbitTemplate.convertAndSend(
                 rabbitMQConfig.getShortLinkEventExchange(),
                 rabbitMQConfig.getShortLinkAddRoutingKey(),
                 eventMessage
         );
+        log.info("[short-link-add][mq-send] success messageId={}", eventMessage.getMessageId());
         return JsonData.buildSuccess();
     }
 
     @Override
     public boolean handleAddShortLink(EventMessage eventMessage) {
+        return handleAddShortLink(eventMessage, 0);
+    }
+
+    private boolean handleAddShortLink(EventMessage eventMessage, int retryCount) {
 
         Long accountNo = eventMessage.getAccountNo();
         String messageType = eventMessage.getEventMessageType();
+        log.info("[short-link-add][handler] start messageId={}, type={}, accountNo={}, retryCount={}, content={}",
+                eventMessage.getMessageId(), messageType, accountNo, retryCount, eventMessage.getContent());
 
         ShortLinkAddRequest addRequest = JsonUtil.json2Obj(eventMessage.getContent(), ShortLinkAddRequest.class);
+        log.info("[short-link-add][handler] parsed request messageId={}, groupId={}, title={}, originalUrl={}, domainId={}, domainType={}, expired={}",
+                eventMessage.getMessageId(), addRequest.getGroupId(), addRequest.getTitle(), addRequest.getOriginalUrl(),
+                addRequest.getDomainId(), addRequest.getDomainType(), addRequest.getExpired());
         //短链域名校验
         DomainDO domainDO = checkDomain(addRequest.getDomainType(), addRequest.getDomainId(), accountNo);
         //校验组是否合法
         LinkGroupDO linkGroupDO = checkLinkGroup(addRequest.getGroupId(), accountNo);
+        log.info("[short-link-add][handler] check success messageId={}, domain={}, groupId={}, accountNo={}",
+                eventMessage.getMessageId(), domainDO.getValue(), linkGroupDO.getId(), accountNo);
 
         //长链摘要
         String originalUrlDigest = CommonUtil.MD5(addRequest.getOriginalUrl());
@@ -100,6 +119,8 @@ public class ShortLinkServiceImpl implements ShortLinkService {
 
         //生成短链码
         String shortLinkCode = shortLinkComponent.createShortLinkCode(addRequest.getOriginalUrl());
+        log.info("[short-link-add][handler] generated code messageId={}, code={}, sign={}, originalUrl={}",
+                eventMessage.getMessageId(), shortLinkCode, originalUrlDigest, addRequest.getOriginalUrl());
 
         //加锁
         //key1是短链码，ARGV[1]是accountNo,ARGV[2]是过期时间
@@ -109,10 +130,12 @@ public class ShortLinkServiceImpl implements ShortLinkService {
 
         Long result = redisTemplate.execute(new
                 DefaultRedisScript<>(script, Long.class), Collections.singletonList(shortLinkCode), accountNo, 100);
+        log.info("[short-link-add][redis-lock] messageId={}, code={}, accountNo={}, result={}",
+                eventMessage.getMessageId(), shortLinkCode, accountNo, result);
 
 
         //加锁成功
-        if (result > 0) {
+        if (result != null && result > 0) {
 
             //C端处理
             if (EventMessageType.SHORT_LINK_ADD_LINK.name().equalsIgnoreCase(messageType)) {
@@ -128,10 +151,13 @@ public class ShortLinkServiceImpl implements ShortLinkService {
                             .domain(domainDO.getValue()).groupId(linkGroupDO.getId())
                             .expired(addRequest.getExpired()).sign(originalUrlDigest)
                             .state(ShortLinkStateEnum.ACTIVE.name()).del(0).build();
-                    shortLinkManager.addShortLink(shortLinkDO);
-                    return true;
+                    int rows = shortLinkManager.addShortLink(shortLinkDO);
+                    log.info("[short-link-add][db-write][link] success messageId={}, rows={}, code={}, groupId={}, accountNo={}, domain={}",
+                            eventMessage.getMessageId(), rows, shortLinkCode, linkGroupDO.getId(), accountNo, domainDO.getValue());
+                    return rows == 1;
                 } else {
-                    log.error("C端短链码重复:{}", eventMessage);
+                    log.error("[short-link-add][duplicate][link] messageId={}, code={}, accountNo={}, dbId={}",
+                            eventMessage.getMessageId(), shortLinkCode, accountNo, shortLinCodeDOInDB.getId());
                     duplicateCodeFlag = true;
                 }
 
@@ -149,11 +175,14 @@ public class ShortLinkServiceImpl implements ShortLinkService {
                             .expired(addRequest.getExpired()).sign(originalUrlDigest)
                             .state(ShortLinkStateEnum.ACTIVE.name()).del(0).build();
 
-                    groupCodeMappingManager.add(groupCodeMappingDO);
-                    return true;
+                    int rows = groupCodeMappingManager.add(groupCodeMappingDO);
+                    log.info("[short-link-add][db-write][mapping] success messageId={}, rows={}, code={}, groupId={}, accountNo={}, domain={}",
+                            eventMessage.getMessageId(), rows, shortLinkCode, linkGroupDO.getId(), accountNo, domainDO.getValue());
+                    return rows == 1;
 
                 } else {
-                    log.error("B端短链码重复:{}", eventMessage);
+                    log.error("[short-link-add][duplicate][mapping] messageId={}, code={}, groupId={}, accountNo={}, mappingId={}",
+                            eventMessage.getMessageId(), shortLinkCode, linkGroupDO.getId(), accountNo, groupCodeMappingDOInDB.getId());
                     duplicateCodeFlag = true;
                 }
 
@@ -161,7 +190,8 @@ public class ShortLinkServiceImpl implements ShortLinkService {
 
         } else {
 
-            log.error("加锁失败:{}", eventMessage);
+            log.error("[short-link-add][redis-lock] failed messageId={}, code={}, accountNo={}, result={}",
+                    eventMessage.getMessageId(), shortLinkCode, accountNo, result);
 
             try {
                 TimeUnit.MILLISECONDS.sleep(100);
@@ -173,12 +203,20 @@ public class ShortLinkServiceImpl implements ShortLinkService {
         }
 
         if (duplicateCodeFlag) {
+            if (retryCount >= ADD_SHORT_LINK_MAX_RETRY) {
+                log.error("[short-link-add][handler] retry exhausted messageId={}, type={}, accountNo={}, retryCount={}, content={}",
+                        eventMessage.getMessageId(), messageType, accountNo, retryCount, eventMessage.getContent());
+                return false;
+            }
             String newOriginalUrl = CommonUtil.addUrlPrefixVersion(addRequest.getOriginalUrl());
             addRequest.setOriginalUrl(newOriginalUrl);
             eventMessage.setContent(JsonUtil.obj2Json(addRequest));
-            log.warn("短链码报错失败，重新生成:{}", eventMessage);
-            handleAddShortLink(eventMessage);
+            log.warn("[short-link-add][handler] duplicate retry messageId={}, nextRetryCount={}, oldCode={}, newOriginalUrl={}",
+                    eventMessage.getMessageId(), retryCount + 1, shortLinkCode, newOriginalUrl);
+            return handleAddShortLink(eventMessage, retryCount + 1);
         }
+        log.warn("[short-link-add][handler] unsupported message type or no-op messageId={}, type={}, content={}",
+                eventMessage.getMessageId(), messageType, eventMessage.getContent());
         return false;
     }
 
@@ -282,21 +320,27 @@ public class ShortLinkServiceImpl implements ShortLinkService {
 
     private DomainDO checkDomain(String domainType, Long domainId, Long accountNo) {
         DomainDO domainDO;
+        log.info("[short-link-add][check-domain] domainType={}, domainId={}, accountNo={}", domainType, domainId, accountNo);
         if (DomainTypeEnum.CUSTOM.name().equalsIgnoreCase(domainType)) {
             domainDO = domainManager.findById(domainId, accountNo);
         } else {
             domainDO = domainManager.findByDomainTypeAndID(domainId, DomainTypeEnum.OFFICIAL);
         }
         Assert.notNull(domainDO, "短链域名不合法");
+        log.info("[short-link-add][check-domain] success domainId={}, accountNo={}, domain={}", domainId, accountNo, domainDO.getValue());
         return domainDO;
 
     }
 
     private LinkGroupDO checkLinkGroup(Long groupId, Long accountNo) {
+        log.info("[short-link-add][check-group] groupId={}, accountNo={}", groupId, accountNo);
         LinkGroupDO linkGroupDO = linkGroupManager.detail(groupId, accountNo);
+        if (linkGroupDO == null) {
+            log.warn("[short-link-add][check-group] failed group not found or not owned by account groupId={}, accountNo={}", groupId, accountNo);
+        }
         Assert.notNull(linkGroupDO, "组名不合法");
+        log.info("[short-link-add][check-group] success groupId={}, accountNo={}, title={}", groupId, accountNo, linkGroupDO.getTitle());
         return linkGroupDO;
     }
 
 }
-

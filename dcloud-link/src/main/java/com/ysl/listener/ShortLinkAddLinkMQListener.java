@@ -19,7 +19,7 @@ import java.io.IOException;
 
 @Component
 @Slf4j
-@RabbitListener(queuesToDeclare = { @Queue("short_link.add.link.queue") })
+@RabbitListener(queuesToDeclare = {@Queue("short_link.add.link.queue")})
 @RequiredArgsConstructor
 public class ShortLinkAddLinkMQListener {
 
@@ -30,25 +30,31 @@ public class ShortLinkAddLinkMQListener {
     public void shortLinkHandler(
             EventMessage eventMessage,
             Message message, Channel channel) throws IOException {
-        log.info("监听到消息ShortLinkAddLinkMQListener message消息内容:{}",message);
-        try{
+        log.info("[short-link-add][listener-link] receive messageId={}, rawMessage={}", eventMessage.getMessageId(), message);
+        try {
 
             //TODO 处理业务逻辑
             eventMessage.setEventMessageType(EventMessageType.SHORT_LINK_ADD_LINK.name());
-            shortLinkService.handlerAddShortLink(eventMessage);
+            boolean result = shortLinkService.handleAddShortLink(eventMessage);
+            log.info("[short-link-add][listener-link] handle result messageId={}, result={}, content={}",
+                    eventMessage.getMessageId(), result, eventMessage.getContent());
 
-        }catch (Exception e){
+        } catch (IllegalArgumentException e) {
+
+            log.warn("[short-link-add][listener-link] invalid business message, discard without requeue messageId={}, reason={}, eventMessage={}",
+                    eventMessage.getMessageId(), e.getMessage(), eventMessage);
+            return;
+        } catch (Exception e) {
 
             //处理业务异常，还有进行其他操作，比如记录失败原因
-            log.error("消费失败:{}",eventMessage);
+            log.error("[short-link-add][listener-link] consume failed messageId={}, eventMessage={}", eventMessage.getMessageId(), eventMessage, e);
             throw new BizException(BizCodeEnum.MQ_CONSUME_EXCEPTION);
         }
-        log.info("消费成功:{}",eventMessage);
+        log.info("[short-link-add][listener-link] consume success messageId={}, eventMessage={}", eventMessage.getMessageId(), eventMessage);
         //确认消息消费成功
         //channel.basicAck(tag,false);
 
     }
-
 
 
 }

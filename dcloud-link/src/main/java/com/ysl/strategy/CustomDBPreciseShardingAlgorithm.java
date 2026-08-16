@@ -12,13 +12,12 @@ public class CustomDBPreciseShardingAlgorithm implements PreciseShardingAlgorith
 
 
     public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<String> shardingValue) {
-
-        String codePrefix = shardingValue.getValue().substring(0, 1);
+        String dbPrefix = ShardingDBConfig.getRandomDBPrefix(shardingValue.getValue());
 
         for (String targetName : availableTargetNames) {
             String targetNameSuffix = targetName.substring(targetName.length() - 1);
 
-            if (codePrefix.equals(targetNameSuffix)) {
+            if (dbPrefix.equals(targetNameSuffix)) {
                 return targetName;
             }
         }
