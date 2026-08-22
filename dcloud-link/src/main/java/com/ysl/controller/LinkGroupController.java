@@ -29,12 +29,14 @@ public class LinkGroupController {
     @PostMapping("/add")
     @Operation(summary = "新增短链分组", description = "为当前登录账号新增一个短链分组。")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "新增结果", content = @Content(schema = @Schema(implementation = JsonData.class)))
+            @ApiResponse(responseCode = "200", description = "新增结果，msg 为创建成功提示", content = @Content(schema = @Schema(implementation = JsonData.class)))
     })
     public JsonData add(
             @Parameter(description = "新增分组请求参数", required = true) @RequestBody LinkGroupAddRequest addRequest) {
         int rows = linkGroupService.add(addRequest);
-        return rows == 1 ? JsonData.buildSuccess() : JsonData.buildResult(BizCodeEnum.GROUP_ADD_FAIL);
+        return rows == 1
+                ? new JsonData(0, null, addRequest.getTitle() + " 创建成功")
+                : JsonData.buildResult(BizCodeEnum.GROUP_ADD_FAIL);
     }
 
     @GetMapping("del/{group_id}")

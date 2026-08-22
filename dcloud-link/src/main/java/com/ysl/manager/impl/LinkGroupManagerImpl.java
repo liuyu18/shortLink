@@ -20,6 +20,17 @@ public class LinkGroupManagerImpl implements LinkGroupManager {
     }
 
     @Override
+    public boolean existsByTitle(Long accountNo, String title, Long excludeGroupId) {
+        QueryWrapper<LinkGroupDO> queryWrapper = new QueryWrapper<LinkGroupDO>()
+                .eq("account_no", accountNo)
+                .eq("title", title);
+        if (excludeGroupId != null) {
+            queryWrapper.ne("id", excludeGroupId);
+        }
+        return linkGroupMapper.selectCount(queryWrapper) > 0;
+    }
+
+    @Override
     public int del(Long groupId, Long accountNo) {
         return linkGroupMapper.delete(new QueryWrapper<LinkGroupDO>().eq("id",groupId).eq("account_no",accountNo));
     }
